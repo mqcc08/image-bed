@@ -1,0 +1,57 @@
+
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <title> postImg - 图床 </title>
+        <!--[if lt IE 9]>
+        <meta http-equiv="refresh" content="0;ie.html" />
+        <![endif]-->
+        <link rel="shortcut icon" href="favicon.ico">
+        <script th:src="@{'/plugins/jquery/jquery.js'}"></script>
+
+        <style>
+            .card {
+                transition: .3s ease-in-out;
+            }
+
+        </style>
+</head>
+<body>
+<script src="https://unpkg.com/minigrid@3.1.1/dist/minigrid.min.js"></script>
+
+<div class=" cards" >
+    <div class="card" th:each="tmlFile:${files}">
+        <img  th:src="${tmlFile.key}">
+    </div>
+</div>
+<!--<div class="cards">
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+</div>-->
+
+
+
+</body>
+<script>
+
+    $(function () {
+        var grid = new Minigrid({
+            container: '.cards',
+            item: '.card',
+            gutter: 6
+        });
+
+
+        window.addEventListener('resize', function(){
+            grid.mount();
+        });
+
+        grid.mount();
+    })
+
+
+</script>
+</html>

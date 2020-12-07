@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title> Cqto - 图床 </title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet" />
+    <link th:href="@{'/plugins/gull/css/lite-purple.css'}" rel="stylesheet" />
+    <link th:href="@{'/plugins/fontawesome/css/all.css'}" rel="stylesheet" />
+    <link th:href="@{'/plugins/toastr/toastr.css'}" rel="stylesheet">
+    <link th:href="@{'/plugins/gull/css/lite-purple-cus.css'}" rel="stylesheet" />
+    <link th:href="@{'/plugins/gull/css/files.css'}" rel="stylesheet" />
+
+    <link th:href="@{'/plugins/webuploader/webuploader.css'}" rel="stylesheet" />
+    <link th:href="@{'/plugins/webuploader/examples/style.css'}" rel="stylesheet" />
+
+
+    <script async src="//picloli.com/sdk/pup.js" data-url="https://picloli.com/upload"></script>
+    <style>
+
+    </style>
+
+</head>
+
+<body class="text-left">
+
+<div class="app-admin-wrap layout-horizontal-bar">
+    <div class="main-header">
+        <div class="logo"><img src="http://liufeiworkwy.gitee.io/gitee-oss/header.png" alt="" /></div>
+        <div class="menu-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="d-flex align-items-center">
+
+        </div>
+        <div style="margin: auto"></div>
+        <div class="header-part-right">
+            <div class="dropdown">
+                <i class="i-Safe-Box text-muted header-icon" id="dropdownMenuButton" role="button"
+                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="menu-icon-grid"><a href="#"><i class="i-Shop-4"></i> Home</a><a href="#"><i
+                            class="i-Library"></i> UI Kits</a><a href="#"><i class="i-Drop"></i> Apps</a><a href="#"><i
+                            class="i-File-Clipboard-File--Text"></i> Forms</a><a href="#"><i class="i-Checked-User"></i>
+                        Sessions</a><a href="#"><i class="i-Ambulance"></i> Support</a></div>
+                </div>
+            </div>
+
+
+            <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            <div class="col align-self-end">
+                <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            </div>
+        </div>
+    </div>
+    <!-- header top menu end-->
+    <div class="horizontal-bar-wrap">
+
+    </div>
+    <!-- =============== Horizontal bar End ================-->
+    <div class="main-content-wrap d-flex flex-column">
+        <!-- ============ Body content start ============= -->
+        <div class="main-content">
+            <div class="row mb-4">
+                <div class="col-md-12 mb-3">
+                    <div class="card card-table text-left">
+                        <div class="card-body">
+
+
+                            <div class="table-header">
+                                <div class="ml-1">
+                                    <h4 class="h-title mb-3">文件列表()</h4>
+                                </div>
+                                <div class="btn-operate mb-3">
+                                    <button class="btn  btn-primary m-1 btn-upload" data-index="0" type="button">上传文件</button>
+                                    <button class="btn  btn-danger m-1" type="button">删除文件</button>
+                                    <button class="btn btn-warning  m-1" type="button">构建</button>
+                                    <button class="btn btn-warning  m-1" type="button">部署</button>
+                                </div>
+                                <div class="div-upload hide ">
+                                    <div id="wrapper">
+                                        <div id="container">
+                                            <!--头部，相册选择和格式选择-->
+
+                                            <div id="uploader">
+                                                <div class="queueList">
+                                                    <div id="dndArea" class="placeholder">
+                                                        <div id="filePicker"></div>
+                                                        <p>或将照片拖到这里，单次最多可选300张</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="progress">
+                                                        <span class="text">0%</span>
+                                                        <span class="percentage"></span>
+                                                    </div><div class="info"></div>
+                                                    <div class="btns">
+                                                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="table-header-navigate">
+                                <div class="btn-operate pull-left">
+                                    <button id="pup-preview" class="chevereto-pup-button chevereto-pup-button--palette-default" value=""><span class="chevereto-pup-button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M76.7 87.5c12.8 0 23.3-13.3 23.3-29.4 0-13.6-5.2-25.7-15.4-27.5 0 0-3.5-0.7-5.6 1.7 0 0 0.6 9.4-2.9 12.6 0 0 8.7-32.4-23.7-32.4 -29.3 0-22.5 34.5-22.5 34.5 -5-6.4-0.6-19.6-0.6-19.6 -2.5-2.6-6.1-2.5-6.1-2.5C10.9 25 0 39.1 0 54.6c0 15.5 9.3 32.7 29.3 32.7 2 0 6.4 0 11.7 0V68.5h-13l22-22 22 22H59v18.8C68.6 87.4 76.7 87.5 76.7 87.5z"></path></svg></span><span class="%tClass">上传图片</span></button>
+                                    <button class="btn btn-raised-secondary m-1" type="button" onclick="javascript:history.go(-1)"><i class="fa fa-chevron-left"></i></button>
+                                    <button class="btn btn-raised-secondary m-1 btn-refresh" type="button" ><i class="fa fa-sync"></i></button>
+                                    <button class="btn btn-raised-secondary m-1" type="button" onclick="window.history.forward()"><i class="fa fa-chevron-right"></i></button>
+                                </div>
+                                <div class="accordion pull-left">
+                                    <div class="accordions">
+                                        <div class="accordion-item">
+                                            <span class="ml-2" >根目录 </span> &nbsp;>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover ">
+                                    <tbody>
+
+                                    <tr >
+                                        <td class="td-checkbox">
+                                            <label class="checkbox checkbox-primary">
+                                                <input type="checkbox" >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </td>
+                                        <td class="icon-file">
+                                            <div><img src="images/file.png"></div>
+                                        </td>
+                                        <td>
+                                            <div  class="file-name ml-3"><span >222222222222222</span></div>
+                                        </td>
+                                        <td>
+                                            <span >1024</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-pre-image"  type="button" ><i class="nav-icon i-Pen-2"></i></button>
+                                            <button class="btn btn-danger" type="button"><i class="nav-icon i-Close-Window"></i></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- Footer Start -->
+
+    </div>
+
+    <div class=" pre-image hide" style="width: 98%">
+        <div class="form-group row">
+            <div class="div-pre-image"  style="width: auto">
+                <img src="http://liufeiworkwy.gitee.io/gitee-oss/xj.jpg">
+            </div>
+            <div class="col-sm-4">
+                <span class="pull-left">外链: </span>
+                <input type="text" class="form-control other-link pull-left" name="other-link"  >
+            </div>
+        </div>
+    </div>
+</div><!-- ============ Search UI Start ============= -->
+
+<script th:src="@{'/plugins/jquery/jquery.js'}"></script>
+<script th:src="@{'/plugins/bootstrap/js/bootstrap.bundle.js'}" ></script>
+<script th:src="@{'/plugins/toastr/toastr.min.js'}"></script>
+<script th:src="@{'/plugins/webuploader/webuploader.js'}"></script>
+<script th:src="@{'/plugins/webuploader/examples/upload.js'}"></script>
+
+<script th:src="@{'/plugins/cqto/cqto.min.js'}"></script>
+
+<script th:src="@{'/plugins/gull/js/files.js'}"></script>
+
+<script>
+
+
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,428 @@
+
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title> Cqto - 图床 </title>
+        <!--[if lt IE 9]>
+        <meta http-equiv="refresh" content="0;ie.html" />
+        <![endif]-->
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <did th:replace="cdn/cdn.base"></did>
+
+
+        <style>
+
+            .original-image-docker{
+                top:0;
+                left:0;
+                bottom:0;
+                right:0;
+                position: absolute;
+            }
+
+
+            .main-header{
+                z-index: 1 !important;
+            }
+
+            .image-pre-docker-style{
+                -webkit-user-select: none;margin: auto;; position: relative;top:50%; transform: translate(0%,-50%);
+            }
+            .img-change-btn-left{
+                position: absolute;top:50%;   transform: translate(0%,0%);
+                width: 50px;
+                height: 50px;
+                color: #FFFFFF;
+                border-radius: 25px;
+                border: 1px solid;
+                padding: 15px 0px;
+                cursor: pointer;
+                font-size: 20px;
+            }
+
+            .img-change-btn-right{
+                position: absolute;top:50%; right:5px; transform: translate(0%,0%);
+                width: 50px;
+                height: 50px;
+                color: #FFFFFF;
+                border-radius: 25px;
+                border: 1px solid;
+                padding: 15px 18px;
+                cursor: pointer;
+                font-size: 20px;
+
+            }
+            .img-change-btn-right:hover, .img-change-btn-left:hover{
+                background-color: #000000;
+                border: 1px solid #000000;
+            }
+
+
+            @media (max-width: 576px) {
+                .waterfall,.items{
+                    column-count: 2;
+                    column-gap: 0;
+                }
+            }
+        </style>
+    </head>
+<body>
+
+
+<div class="app-admin-wrap layout-horizontal-bar">
+    <div class="main-header">
+        <div class="logo"><img src="http://liufeiworkwy.gitee.io/gitee-oss/header.png" alt="" /></div>
+        <div class="menu-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="d-flex align-items-center">
+
+        </div>
+        <div style="margin: auto"></div>
+        <div class="header-part-right">
+            <div class="dropdown">
+                <i class="i-Safe-Box text-muted header-icon" id="dropdownMenuButton" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="menu-icon-grid"><a href="#"><i class="i-Shop-4"></i> Home</a><a href="#"><i
+                            class="i-Library"></i> UI Kits</a><a href="#"><i class="i-Drop"></i> Apps</a><a href="#"><i
+                            class="i-File-Clipboard-File--Text"></i> Forms</a><a href="#"><i class="i-Checked-User"></i>
+                        Sessions</a><a href="#"><i class="i-Ambulance"></i> Support</a></div>
+                </div>
+            </div>
+
+
+            <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            <div class="col align-self-end">
+                <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            </div>
+        </div>
+    </div>
+    <div class="horizontal-bar-wrap"></div>
+
+    <div class="container">
+        <div class="items-dorker">
+            <div class="items" id="items"></div>
+        </div>
+
+        <div>
+            <button class="btn btn-outline-primary btn-blue btn-load-data btn-block m-1 mb-3" type="button">
+
+                <span class="load-next-data">加载下页数据</span>
+                <div class="sk-spinner sk-spinner-wave hide">
+                    <div class="sk-rect1"></div>
+                    <div class="sk-rect2"></div>
+                    <div class="sk-rect3"></div>
+                    <div class="sk-rect4"></div>
+                    <div class="sk-rect5"></div>
+                </div>
+
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</body>
+<script src="/plugins/viewer/js/viewer.js"></script>
+
+<script  th:inline="javascript">
+
+    var category = [[${category}]];
+    var pageNumber = 1;
+
+    var loading;
+
+    var imagePreHtml = "<div class=\"image-pre\" style=\"vertical-align: middle;text-align: center;position: absolute; top: {fixTop} ; left:0 ; width: 100%;margin: 0px; background: #7f7f7f; height: 100% ; z-index: 10\">\n" +
+        "<div style='width:100%; height:100%; border:1px solid black; position:relative;'>" +
+        "<div class='image-pre-docker image-pre-docker-style' >"+
+        "<img style='cursor: zoom-in' src=\"{imageUrl}\" width=\"{imageWidth}\" height=\"{imageHeight}\">\n" +
+            "<div class='img-change-btn-left'><i class='fa  fa-chevron-left' ></i> </div>"+
+            "<div class='img-change-btn-right'><i class='fa  fa-chevron-right' ></i> </div>"+
+        "</div>"+
+        //"<img style=\"-webkit-user-select: none;margin: auto;cursor: zoom-in; position: absolute;top:50%; left:50%; transform: translate(-50%,-50%);\" src=\"{imageUrl}\" width=\"{imageWidth}\" height=\"{imageHeight}\">\n" +
+        "<div class='image-pre-close' style='padding: 10px;position: absolute; right: 0; top: 0;width: 50px;height: 50px;border: 1px solid #FFFFFF; color: #FFFFFF'><i class=\"fa fa-2x fa-times\"></i></div> " +
+        "</div>"+
+        "</div>";
+
+    var loadFlag = false;
+    $(function () {
+        loading = $.loading();
+
+        $(document).on("click" , ".image-pre-close" , function () {
+            $(".image-pre").remove();
+
+            $(".onPreview").removeClass("onPreview")
+        })
+        $(document).on("click" , ".img-change-btn-right" , function () {
+            imgePreviewNext();
+        })   ;
+        $(document).on("click" , ".img-change-btn-left" , function () {
+            imgePreviewPre
+        })
+
+
+        $(document).on("click" , ".item-content img" , function () {
+            //window.open();
+            //loading = $.loading();
+
+            $(this).parent(".item-content ").parent(".item").addClass("onPreview");
+
+             var imgSrc = $(this).attr("src");
+
+            console.log('click image')
+            if (imgSrc.indexOf("images/load.gif")>=0 ){
+                cqto.error("图片加载中,请稍后在预览!");
+                return;
+            }
+
+            var loadSuccessFlag = $(this).attr("data-load-success");
+            if (!loadSuccessFlag){
+                cqto.error("图片加载中,请稍后在预览!");
+                return;
+            }
+
+            var img = new Image()
+            img.src = imgSrc;
+            var imageWidth;
+            var imageHeight;
+            var tmpImagePreHtml = imagePreHtml
+                .replace("{fixTop}" , document.body.scrollTop)
+                .replace("{imageUrl}" , imgSrc)
+            $(document.body).append(tmpImagePreHtml);
+
+            loading = $.loading();
+            if(img.complete){
+                console.log(" ====> 缓存")
+                imageWidth = img.width;
+                imageHeight = img.height;
+                console.log('image - width:'+img.width+',height:'+img.height)
+                imagePreview(imageWidth , imageHeight , img.src);
+            }else{
+                console.log(" ====> load")
+                // 加载完成执行
+                img.onload = function(){
+                    // 打印
+                    imageWidth = img.width;
+                    imageHeight = img.height;
+                    console.log('image - width:'+img.width+',height:'+img.height)
+                    imagePreview(imageWidth , imageHeight , img.src);
+                }
+            }
+        })
+
+        // 加载图变成图片预览图
+        document.addEventListener('scroll',function(){
+            $.each($(".container .item-content img ")  , function (index , object) {
+                var elementFlag = elementInView($(object));
+                if(elementFlag){
+                    var dataOrgSrc = $(object).attr("data-thumb-src");
+                    $(object).removeAttr("data-thumb-src");
+                    if (dataOrgSrc != null && dataOrgSrc !="" && dataOrgSrc!=undefined){
+                        $(object).attr("src" , dataOrgSrc);
+                    }
+                }
+            })
+
+            scrollImagePreview();
+        })
+        //
+        $(".btn-load-data").hover(function () {
+            $(this).addClass("btn-blue-hover");
+            $(this).find(".sk-spinner-wave div").addClass("sk-spinner-wave-bgColor");
+        },function () {
+            $(this).removeClass("btn-blue-hover");
+            $(this).find(".sk-spinner-wave div").removeClass("sk-spinner-wave-bgColor");
+
+        })
+
+
+
+        window.onresize = function(){
+            imagePreviewOnresize();
+        }
+        // 加载下页数据
+        $(".btn-load-data").click(function () {
+            ajaxImagePage();
+        })
+        initImagePage();
+    })
+
+
+    function elementInView(element) {
+        const rect = $(element)[0].getBoundingClientRect()
+        const yInView = rect.top < window.innerHeight && rect.bottom > 0
+        const xInView = rect.left < window.innerWidth && rect.right > 0
+        return (yInView && xInView);
+    }
+
+
+
+
+
+    function scrollToElement(element) {
+        var height = 1;
+        if (element != null && element != undefined){
+            console.log($(element).attr("class"))
+            var elementHeight = $(element).offset().top;
+            height = elementHeight +50;
+        }
+        $('html,body').animate({scrollTop:height+"px"}, 800);
+    }
+
+    var dirHtml = "<div class=\"item\" ><div class=\"item-content \"> <img data-load-success='false' onload='imageOnLoad(this)' data-org-src='{imageSrcOrg}' data-thumb-src='{imageSrcThumb}' src='{defaultSrc}' /> </div></div>"
+    function getCategoryImages( category ,pageNumber , func) {
+        var params = {
+            category: category,
+            page:pageNumber
+        };
+        httpClient.post("/api/postimg/jsons" ,params, function (data) {
+            return func(data);
+        })
+    }
+
+
+
+
+
+    function initImagePage() {
+        httpClient.post("/api/che/imagePage" ,{category: category}, function (data) {
+
+            var tmpImageHtml = "<div class='items'>";
+            $.each(data.data , function (index , object) {
+                tmpImageHtml += dirHtml.replace("{imageSrcOrg}" , object.imageSrcOrg)
+                                .replace("{imageSrcThumb}" , object.imageSrcThumb)
+                                .replace("{imageSrcThumb}" , "/images/load.gif")
+                if (data.data.length<8){
+                    tmpImageHtml = tmpImageHtml.replace("{defaultSrc}" , object.imageSrcThumb);
+                }else{
+                    tmpImageHtml = tmpImageHtml.replace("{defaultSrc}" , "/images/load.gif");
+                }
+            })
+            tmpImageHtml += "</div";
+            $(".items-dorker").append(tmpImageHtml);
+            //$(".items").weimg();
+            $.unloading(loading);
+            scrollToElement();
+        })
+    }
+
+    function ajaxImagePage() {
+        pageNumber = pageNumber + 1;
+        var params = {
+            category: category.split(".")[1],
+            page: pageNumber
+        };
+        loading = $.loading();
+        httpClient.post("/api/che/imagePageNumber" , params , function (data) {
+
+            var tmpImageHtml = "<div class='items'>";
+            $.each(data.data , function (index , object) {
+                tmpImageHtml += dirHtml.replace("{imageSrcOrg}" , object.imageSrcOrg)
+                    .replace("{imageSrcThumb}" , object.imageSrcThumb)
+                    .replace("{defaultSrc}" , "/images/load.gif")
+            })
+            tmpImageHtml += "</div";
+
+            $(".items-dorker").append(tmpImageHtml);
+            scrollToElement($(".items-dorker .items").last())
+            //$(".items").weimg();
+            $.unloading(loading);
+        })
+    }
+
+    function scrollImagePreview() {
+        var $imagePre = $(".image-pre");
+        if ($imagePre){
+            $imagePre.css("top",document.body.scrollTop);
+        }
+    }
+    function imagePreview(imageWidth , imageHeight , imageUrl) {
+
+        var xs = imageWidth / imageHeight;
+        console.log("xs = "+xs)
+        var seeHeight = document.body.clientHeight
+        var seeWidth = document.body.clientWidth
+        if (imageHeight > seeHeight){
+            imageHeight = seeHeight;
+            imageWidth = xs * imageHeight;
+        }
+        if (imageWidth > seeWidth){
+            imageWidth = seeWidth;
+            imageHeight = imageWidth / xs;
+        }
+        console.log("xs -2  = "+(imageWidth / imageHeight))
+        $(".image-pre img").attr("width",imageWidth).attr("height", imageHeight)
+        .attr("data-width",imageWidth).attr("data-height", imageHeight);
+        $.unloading(loading);
+    }
+
+    function imagePreviewOnresize() {
+        var $image = $(".image-pre img");
+        var imageWidth = $image.attr("data-width");
+        var imageHeight = $image.attr("data-height");
+        var xs = imageWidth / imageHeight;
+        var seeHeight = document.body.clientHeight
+        var seeWidth = document.body.clientWidth
+        if (imageHeight > seeHeight){
+            imageHeight = seeHeight;
+            imageWidth = xs * imageHeight;
+        }
+        if (imageWidth > seeWidth){
+            imageWidth = seeWidth;
+            imageHeight = imageWidth / xs;
+        }
+        $(".image-pre img").attr("width",imageWidth).attr("height", imageHeight);
+    }
+
+    function imageOnLoad(object) {
+        var image = $(object)[0];
+        if(image.complete){
+            $(object).attr("data-load-success" , true);
+            $(object).attr("data-width" , image.width);
+            $(object).attr("data-height" , image.height);
+        }else{
+            // 加载完成执行
+            image.onload = function(){
+                $(object).attr("data-load-success" , true);
+                $(object).attr("data-width" , image.width);
+                $(object).attr("data-height" , image.height);
+            }
+        }
+    }
+    
+    
+    function imgePreviewNext() {
+        var $items = $(".onPreview");
+        $items.removeClass("onPreview");
+        console.log($items.html())
+        var nextItemObject = $items.next();
+        var nextImage =nextItemObject.children(".item-content ").children("img");
+        $(nextItemObject).addClass("onPreview");
+        console.log($(nextImage).attr("src"))
+        $(".image-pre .image-pre-docker img").attr("src" , $(nextImage).attr("src"))
+    }
+
+    function imgePreviewPre() {
+        var $items = $(".onPreview");
+        $items.removeClass("onPreview");
+        console.log($items.html())
+        var nextItemObject = $items.pre();
+        var nextImage =nextItemObject.children(".item-content ").children("img");
+        $(nextItemObject).addClass("onPreview");
+        console.log($(nextImage).attr("src"))
+        $(".image-pre .image-pre-docker img").attr("src" , $(nextImage).attr("src"))
+    }
+</script>
+</html>

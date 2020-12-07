@@ -1,0 +1,193 @@
+
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title> Cqto - 图床 </title>
+        <!--[if lt IE 9]>
+        <meta http-equiv="refresh" content="0;ie.html" />
+        <![endif]-->
+        <link rel="shortcut icon" href="favicon.ico">
+        <did th:replace="cdn/cdn.base"></did>
+
+        <style>
+
+
+
+
+            .category{
+                padding: 20px 0px 0px 0px;
+            }
+
+            .item-content {
+                padding: 40px 20px 10px 20px;
+                background-color: #FFFFFF;
+            }
+            .btn-raised-blue{
+                padding: 0px;
+                background-color: white;
+                color: #3a80ea;
+                font-size: 22px;
+            }
+            .btn-raised-blue:hover{
+                background-color: #3a80ea;
+                color: #FFFFFF;
+            }
+            .btn-raised-blue i{
+                margin: 5px 10px;
+            }
+
+            .folder-title{
+                width: 100%;
+                margin-top: 10px;
+            }
+            .image-count{
+                padding-top: 10px;
+            }
+            .breadcrumb h1{
+                font-size: 26px;
+            }
+
+            @media (max-width: 576px) {
+                .waterfall,.items{
+                    column-count: 2;
+                    column-gap: 0;
+                }
+            }
+            @media (max-width: 768px) {
+                .waterfall,.items{
+                    column-count: 2;
+                    column-gap: 0;
+                }
+            }
+            @media (min-width: 1440px){
+                .container {
+                    max-width: 1440px !important;
+                }
+            }
+
+        </style>
+    </head>
+<body>
+
+
+<div class="app-admin-wrap layout-horizontal-bar">
+
+    <div class="main-header">
+        <div class="logo"><img src="http://liufeiworkwy.gitee.io/gitee-oss/header.png" alt="" /></div>
+        <div class="menu-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="d-flex align-items-center">
+
+        </div>
+        <div style="margin: auto"></div>
+        <div class="header-part-right">
+            <div class="dropdown">
+                <i class="i-Safe-Box text-muted header-icon" id="dropdownMenuButton" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="menu-icon-grid"><a href="#"><i class="i-Shop-4"></i> Home</a><a href="#"><i
+                            class="i-Library"></i> UI Kits</a><a href="#"><i class="i-Drop"></i> Apps</a><a href="#"><i
+                            class="i-File-Clipboard-File--Text"></i> Forms</a><a href="#"><i class="i-Checked-User"></i>
+                        Sessions</a><a href="#"><i class="i-Ambulance"></i> Support</a></div>
+                </div>
+            </div>
+
+
+            <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            <div class="col align-self-end">
+                <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            </div>
+        </div>
+    </div>
+    <div class="horizontal-bar-wrap"></div>
+    <div class="container">
+        <div class="breadcrumb">
+            <h1>我的图片</h1>
+            <ul>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <div class="items" > </div>
+    </div>
+
+</div>
+
+
+
+</body>
+<script>
+
+    var loading;
+    $(function () {
+
+        loading = $.loading();
+
+        $(document).on("click" , ".item-content" , function () {
+            var categoryValue = $(this).attr("data-category-href");
+            console.log(categoryValue);
+            window.location.href = "/che/images?category="+categoryValue;
+        })
+
+        $(document).on("click" , ".btn-delete-category" , function (event) {
+            deleteCategory();
+            event.stopPropagation();
+        })
+        getCategorys();
+    })
+
+
+
+
+
+    function deleteCategory() {
+        var falg = confirm("确认要删除这个文件夹嘛？");
+        if (falg){
+            console.log("删除");
+        }else{
+            console.log("不删除")
+        }
+
+    }
+
+
+
+
+
+    var dirHtml = "<div class=\"item\" ><div class=\"item-content \" data-category-href='{categoryHref}'>" +
+        "<img class='folder-thumb' src='/images/folder.png'> " +
+        "<span class='category' data-category-value='{categoryValue}' >{categoryName}</span>\n" +
+        "<div class=\"folder-title\">\n" +
+        "    <div class=\"pull-left image-count\">\n" +
+        "        <i class=\"fa fa-picture-o\">{categoryCount}</i>\n" +
+        "    </div>\n" +
+        "    <div class=\"pull-right\">\n" +
+        "        <button class=\"btn btn-raised ripple btn-raised-blue btn-setting-category m-1\" type=\"button\"><i class=\"fa fa-cog\"></i></button>\n" +
+        "        <button class=\"btn btn-raised ripple btn-raised-blue btn-delete-category m-1\" type=\"button\"><i class=\"fa fa-trash\"></i></button>\n" +
+        "    </div>\n" +
+        "</div>"+
+        "</div></div>"
+    function getCategorys() {
+        httpClient.post("/api/che/jsonCategorys" ,{}, function (data) {
+            if (data.code == 200){
+                var tmpDirHtml = "";
+                $.each(data.data , function (index , object) {
+                    tmpDirHtml += dirHtml.replace("{categoryHref}" , object.categoryHref)
+                        .replace("{categoryName}" , object.categoryName)
+                        .replace("{categoryCount}" , object.categoryCount)
+                        .replace("{itemCategoryValue}" , object.value);
+                })
+                $(".items").empty().append(tmpDirHtml);
+            }
+            $.unloading(loading);
+        })
+    }
+</script>
+</html>

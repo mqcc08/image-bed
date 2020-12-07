@@ -1,0 +1,100 @@
+
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title> postImg - 图床 </title>
+        <!--[if lt IE 9]>
+        <meta http-equiv="refresh" content="0;ie.html" />
+        <![endif]-->
+        <link rel="shortcut icon" href="favicon.ico">
+        <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <script th:src="@{'/plugins/jquery/jquery.js'}"></script>
+        <script src="/plugins/bootstrap/js/bootstrap.bundle.js"></script>
+        <script src="/plugins/cqto/cqto.min.js"></script>
+
+        <style>
+            .card {
+                transition: .3s ease-in-out;
+                border: 1px solid blue;
+                padding: 5px;
+                border-radius: 3px;
+            }
+            .waterfall,.container{
+                column-count: 4;
+                column-gap: 0;
+            }
+            .item{
+                box-sizing: border-box;
+                break-inside: avoid;
+                padding: 10px;
+            }
+            .item-content{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: auto;
+                font-size: 20px;
+                color: #686868;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+            .item-content img{
+                border-radius: 3px;
+                cursor: pointer;
+            }
+            @media (max-width: 576px) {
+                .waterfall,.container{
+                    column-count: 2;
+                    column-gap: 0;
+                }
+            }
+        </style>
+    </head>
+<body>
+
+<div class=" container">
+    <div class="item" >
+        <div class="item-content ">
+            <img class="" width="100%">
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script  th:inline="javascript">
+
+    var category = [[${category}]];
+
+    $(function () {
+        document.addEventListener('scroll',function(){
+            $.each($(".container .item-content img ") , function (index , object) {
+                elementInView($(object));
+            })
+        })
+        scrollToElement()
+    })
+
+
+    function elementInView(element) {
+        const rect = $(element)[0].getBoundingClientRect()
+        const yInView = rect.top < window.innerHeight && rect.bottom > 0
+        const xInView = rect.left < window.innerWidth && rect.right > 0
+        if(yInView && xInView){
+            $(element).attr("src" , $(element).attr("data-src"));
+        }
+    }
+    function scrollToElement() {
+        $('html,body').animate({scrollTop:1}, 800);
+    }
+
+</script>
+</html>

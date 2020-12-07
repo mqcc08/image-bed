@@ -1,0 +1,20 @@
+# 配置请求端口
+server:
+  port: 6001
+
+spring:
+  thymeleaf:
+    cache: false
+    suffix: .html
+    prefix: classpath:/templates/
+  # 设置日期和格式化日期
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+

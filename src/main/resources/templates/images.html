@@ -1,0 +1,282 @@
+
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title> Cqto - 图床 </title>
+        <!--[if lt IE 9]>
+        <meta http-equiv="refresh" content="0;ie.html" />
+        <![endif]-->
+        <link rel="shortcut icon" href="favicon.ico">
+        <link th:href="@{'/plugins/gull/css/lite-purple.css'}" rel="stylesheet" />
+
+        <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/plugins/toastr/toastr.css" rel="stylesheet">
+
+        <link th:href="@{'/plugins/animate/animate.min.css'}" rel="stylesheet" />
+
+        <link th:href="@{'/plugins/gull/css/lite-purple-cus.css'}" rel="stylesheet" />
+        <link th:href="@{'/plugins/viewer/css/viewer.min.css'}" rel="stylesheet" />
+
+        <script th:src="@{'/plugins/jquery/jquery.js'}"></script>
+        <script src="/plugins/bootstrap/js/bootstrap.bundle.js"></script>
+        <script src="/plugins/toastr/toastr.min.js"></script>
+
+        <script src="/plugins/fly-zomm/fly-zomm-img.js"></script>
+        <script src="/plugins/cqto/cqto.min.js"></script>
+
+        <style>
+
+            .original-image-docker{
+                top:0;
+                left:0;
+                bottom:0;
+                right:0;
+                position: absolute;
+            }
+
+            .original-image{
+                height:100%;
+                width:100%;
+                border:0;
+                z-index: 9999999999999999;
+            }
+            @media (max-width: 576px) {
+                .waterfall,.items{
+                    column-count: 2;
+                    column-gap: 0;
+                }
+            }
+        </style>
+    </head>
+<body>
+
+
+<div class="app-admin-wrap layout-horizontal-bar">
+
+    <div class="main-header">
+        <div class="logo"><img src="http://liufeiworkwy.gitee.io/gitee-oss/header.png" alt="" /></div>
+        <div class="menu-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="d-flex align-items-center">
+
+        </div>
+        <div style="margin: auto"></div>
+        <div class="header-part-right">
+            <div class="dropdown">
+                <i class="i-Safe-Box text-muted header-icon" id="dropdownMenuButton" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="menu-icon-grid"><a href="#"><i class="i-Shop-4"></i> Home</a><a href="#"><i
+                            class="i-Library"></i> UI Kits</a><a href="#"><i class="i-Drop"></i> Apps</a><a href="#"><i
+                            class="i-File-Clipboard-File--Text"></i> Forms</a><a href="#"><i class="i-Checked-User"></i>
+                        Sessions</a><a href="#"><i class="i-Ambulance"></i> Support</a></div>
+                </div>
+            </div>
+
+
+            <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            <div class="col align-self-end">
+                <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen=""></i>
+            </div>
+        </div>
+    </div>
+    <div class="horizontal-bar-wrap"></div>
+
+    <div class="container">
+
+       <!-- https://i.postimg.cc/z8s7K7zJ/80016845-p24.png
+
+        <img width="100%"
+             data-org-src="https://i.postimg.cc/8zbLVhf3/80016845-p24.png"
+             src="https://i.postimg.cc/yDkDm3PX/80016845-p24.png">
+        <img width="100%"
+             data-org-src="https://i.postimg.cc/8zbLVhf3/80016845-p24.png"
+             src="https://i.postimg.cc/8zbLVhf3/80016845-p24.png">
+
+-->
+
+
+
+        <div class="headerPic" id="headerPic">
+            <img src="https://i.postimg.cc/14w4MZw2/76087289-p26.png" alt="">
+        </div>
+
+        <div class="items-dorker">
+            <div class="items" id="items"></div>
+        </div>
+
+        <div>
+            <button class="btn btn-outline-primary btn-blue btn-load-data btn-block m-1 mb-3" type="button">
+
+                <span class="load-next-data">加载下页数据</span>
+                <div class="sk-spinner sk-spinner-wave hide">
+                    <div class="sk-rect1"></div>
+                    <div class="sk-rect2"></div>
+                    <div class="sk-rect3"></div>
+                    <div class="sk-rect4"></div>
+                    <div class="sk-rect5"></div>
+                </div>
+
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="original-image-docker hide ">
+    <img class="original-image" src="">
+
+</div>
+
+<div class="modal-backdrop fade in hide "></div>
+
+</body>
+<script src="/plugins/viewer/js/viewer.js"></script>
+
+<script  th:inline="javascript">
+
+    var category = [[${category}]];
+    var pageNumber = 1;
+
+    var loadFlag = false;
+    $(function () {
+        // 加载图变成图片预览图
+        document.addEventListener('scroll',function(){
+            $.each($(".container .item-content img ")  , function (index , object) {
+                var elementFlag = elementInView($(object));
+                if(elementFlag){
+                    var dataOrgSrc = $(object).attr("data-thumb-src");
+                    $(object).removeAttr("data-thumb-src");
+                    if (dataOrgSrc != null && dataOrgSrc !="" && dataOrgSrc!=undefined){
+                        $(object).attr("src" , dataOrgSrc);
+                    }
+                }
+            })
+        })
+        //
+        $(".btn-load-data").hover(function () {
+            $(this).addClass("btn-blue-hover");
+            $(this).find(".sk-spinner-wave div").addClass("sk-spinner-wave-bgColor");
+        },function () {
+            $(this).removeClass("btn-blue-hover");
+            $(this).find(".sk-spinner-wave div").removeClass("sk-spinner-wave-bgColor");
+
+        })
+
+
+
+
+
+        // 加载下页数据
+        $(".btn-load-data").click(function () {
+            if (!loadFlag){
+                loadFlag = true;
+                var $loadNextData = $(this).find(".load-next-data");
+                var $skSpinner = $(this).find(".sk-spinner");
+                $loadNextData.addClass("hide");
+                $skSpinner.removeClass("hide");
+                pageNumber = pageNumber + 1;
+                getCategoryImages(category , pageNumber , function (data) {
+                    if (data.code == 200){
+                        if (data.data.length  == 0){
+                            cqto.info("没有啦");
+                        }else{
+                            var tmpDirHtml = "<div class='items item-"+pageNumber+"'>";
+                            $.each(data.data , function (index , object) {
+                                tmpDirHtml += dirHtml.replace("{dataThumbSrc}" , object[4])
+                                    .replace("{dataOrgSrc}" , object[4].replace(object[0] , object[1]))
+                            })
+                            tmpDirHtml += "</div>"
+                            $(".items-dorker").append(tmpDirHtml);
+                            scrollToElement($(".items-dorker .items").last())
+
+                        }
+                        $loadNextData.removeClass("hide");
+                        $skSpinner.addClass("hide");
+                        loadFlag = false;
+                    }
+                });
+            }
+
+        })
+        initCategoryImages();
+    })
+
+
+    function elementInView(element) {
+        const rect = $(element)[0].getBoundingClientRect()
+        const yInView = rect.top < window.innerHeight && rect.bottom > 0
+        const xInView = rect.left < window.innerWidth && rect.right > 0
+        return (yInView && xInView);
+    }
+
+
+
+
+
+    function scrollToElement(element) {
+        var height = 1;
+        if (element != null && element != undefined){
+            console.log($(element).attr("class"))
+            var elementHeight = $(element).offset().top;
+            console.log(elementHeight)
+            height = elementHeight +50;
+
+        }
+        console.log("height : "+height);
+
+
+        $('html,body').animate({scrollTop:height+"px"}, 800);
+    }
+
+
+
+
+
+
+
+    var dirHtml = "<div class=\"item\" ><div class=\"item-content \"> <img  width=\"100%\" data-org-src='{dataOrgSrc}' data-thumb-src='{dataThumbSrc}' src='/images/load.gif' /> </div></div>"
+    function getCategoryImages( category ,pageNumber , func) {
+        var params = {
+            category: category,
+            page:pageNumber
+        };
+        httpClient.post("/api/postimg/jsons" ,params, function (data) {
+            return func(data);
+        })
+    }
+
+    function initCategoryImages() {
+        getCategoryImages(category , pageNumber , function (data) {
+            if (data.code == 200){
+                var tmpDirHtml = "<div class='items'>";
+                $.each(data.data , function (index , object) {
+                    tmpDirHtml += dirHtml.replace("{dataThumbSrc}" , object[4])
+                        .replace("{dataOrgSrc}" , object[4].replace(object[0] , object[1]))
+                })
+                tmpDirHtml+="</div>"
+                //tmpDirHtml += "<div class='page-iniate-0'></div>"
+                $(".items-dorker").append(tmpDirHtml);
+
+                $.each($(".item-content") , function (i , o) {
+                    new Viewer($(o)[0]);
+
+                })
+
+                console.log(pageNumber)
+                if (pageNumber == 1){
+                    console.log("scroll")
+                    scrollToElement();
+                }
+            }
+        })
+    }
+</script>
+</html>
